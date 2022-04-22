@@ -1,92 +1,74 @@
 #include "main.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 /**
- * printIdentifiers - prints special characters
- * @next: character after the %
- * @arg: argument for the indentifier
- * Return: the number of characters printed
- * (excluding the null byte used to end output to strings)
- */
-
-int printIdentifiers(char next, va_list arg)
-{
-	int functsIndex;
-
-	identifierStruct functs[] = {
-		{"c", print_char},
-		{"s", print_str},
-		{"d", print_int},
-		{"i", print_int},
-		{"u", print_unsigned},
-		{"b", print_unsignedToBinary},
-		{"o", print_oct},
-		{"x", print_hex},
-		{"X", print_HEX},
-		{"S", print_STR},
-		{NULL, NULL}
-	};
-
-	for (functsIndex = 0; functs[functsIndex].indentifier != NULL; functsIndex++)
-	{
-		if (functs[functsIndex].indentifier[0] == next)
-			return (functs[functsIndex].printer(arg));
-	}
-	return (0);
-}
-
-/**
- * _printf - mimic printf from stdio
- * Description: produces output according to a format
- * write output to stdout, the standard output stream
- * @format: character string composed of zero or more directives
- *
- * Return: the number of characters printed
- * (excluding the null byte used to end output to strings)
- * return -1 for incomplete identifier error
+ * _printf - custom function that format and print data
+ * @format:  list of types of arguments passed to the function
+ * Return: int
  */
 
 int _printf(const char *format, ...)
 {
-	unsigned int i;
-	int identifierPrinted = 0, charPrinted = 0;
-	va_list arg;
+	va_list list;
+	int idx, j;
+	int len_buf = 0;
+	char *s;
+	char *create_buff;
 
-	va_start(arg, format);
-	if (format == NULL)
-		return (-1);
+	type_t ops[] = {
+		{"c", print_c},
+		{"s", print_s},
+		{"i", print_i},
+		{"d", print_i},
+		{"b", print_bin},
+		{NULL, NULL}
+	};
 
-	for (i = 0; format[i] != '\0'; i++)
+	create_buff = malloc(1024 * sizeof(char));
+	if (create_buff == NULL)
 	{
-		if (format[i] != '%')
-		{
-			_putchar(format[i]);
-			charPrinted++;
+		free(create_buff);
+		return (-1);
+	}
+	va_start(list, format);
+	if (format == NULL || list == NULL)
+		return (-1);
+	for (idx = 0; format[idx] != '\0'; idx++)
+	{
+		if (format[idx] == '%' && format[idx + 1] == '%')
 			continue;
-		}
-		if (format[i + 1] == '%')
+		else if (format[idx] == '%')
 		{
-			_putchar('%');
-			charPrinted++;
-			i++;
-			continue;
+			if (format[idx + 1] == ' ')
+				idx += _position(format, idx);
+			for (j = 0; ops[j].f != NULL; j++)
+			{
+				if (format[idx + 1] == *(ops[j].op))
+				{
+					s = ops[j].f(list);
+					if (s == NULL)
+						return (-1);
+					_strlen(s);
+					_strcat(create_buff, s, len_buf);
+					len_buf += _strlen(s);
+					idx++;
+					break;
+				}
+			}
+			if (ops[j].f == NULL)
+			{
+				create_buff[len_buf] = format[idx];
+				len_buf++;
+			}
 		}
-		if (format[i + 1] == '\0')
-			return (-1);
-
-		identifierPrinted = printIdentifiers(format[i + 1], arg);
-		if (identifierPrinted == -1 || identifierPrinted != 0)
-			i++;
-		if (identifierPrinted > 0)
-			charPrinted += identifierPrinted;
-
-		if (identifierPrinted == 0)
+		else
 		{
-			_putchar('%');
-			charPrinted++;
+			create_buff[len_buf] = format[idx];
+			len_buf++;
 		}
 	}
-	va_end(arg);
-	return (charPrinted);
+	create_buff[len_buf] = '\0';
+	write(1, create_buff, len_buf);
+	va_end(list);
+	free(create_buff);
+	return (len_buf);
 }
