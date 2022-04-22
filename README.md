@@ -225,7 +225,7 @@ farrukh@ubuntu:~/printf$
 
 ## Authors
 - [Claire-Krystle Akuffo](https://github.com/TicklemeKrystle)
-- [Jonathan Selorm Degbedzui](https://github.com/arthurdamm/Djselorm)
+- [Jonathan Selorm Degbedzui](https://github.com/Djselorm)
 *Sharpening my skills at Holberton School of Software Engineering. I have a lifelong passion for programming with a background in mathematics and a daily meditation practice. Spent the last several
 years enjoying working as a private tutor and am now excited to practice software wizardry professionally.*
 
