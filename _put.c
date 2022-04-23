@@ -1,4 +1,4 @@
-#include "main.h"
+#include <main.h>
 
 /**
  * _puts - prints a string with newline
@@ -18,9 +18,9 @@ int _puts(char *str)
 /**
  * _putchar - writes the character c to stdout
  * @c: The character to print
- *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
+ *
  */
 int _putchar(int c)
 {
